@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FQ Icons</title>
+  <link rel="stylesheet" href="./fq-icons.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #F3F4F6;
+      color: #374151;
+    }
+
+    /* ---- sidebar ---- */
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 196px;
+      background: #fff;
+      border-right: 1px solid #E5E7EB;
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    .sidebar-title {
+      padding: 14px 14px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+      border-bottom: 1px solid #E5E7EB;
+      flex-shrink: 0;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+
+    .sidebar-nav::-webkit-scrollbar { width: 4px; }
+    .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 2px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: #6B7280;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      border-radius: 0;
+      transition: background 0.1s, color 0.1s;
+      gap: 6px;
+    }
+
+    .nav-item:hover { background: #F9FAFB; color: #374151; }
+
+    .nav-item.active {
+      background: #EEF2FF;
+      color: #4F46E5;
+      font-weight: 500;
+    }
+
+    .nav-item .nav-count {
+      font-size: 11px;
+      color: #9CA3AF;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active .nav-count { color: #818CF8; }
+
+    /* ---- sidebar downloads ---- */
+    .sidebar-dl {
+      flex-shrink: 0;
+      border-top: 1px solid #E5E7EB;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-dl-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9CA3AF;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .sidebar-dl-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dl-chip {
+      flex: 1;
+      padding: 5px 0;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+      background: #F9FAFB;
+      color: #374151;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      transition: background 0.1s, border-color 0.1s;
+      white-space: nowrap;
+    }
+
+    .dl-chip:hover { background: #F3F4F6; border-color: #D1D5DB; }
+
+    .dl-all {
+      width: 100%;
+      padding: 7px;
+      border-radius: 6px;
+      border: none;
+      background: #6366F1;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: background 0.1s;
+    }
+
+    .dl-all:hover { background: #4F46E5; }
+    .dl-all.loading { opacity: 0.7; pointer-events: none; }
+
+    /* ---- main wrapper ---- */
+    .shell { margin-left: 196px; }
+
+    /* ---- sticky header ---- */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid #E5E7EB;
+      padding: 14px 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-row { display: flex; align-items: center; gap: 12px; }
+
+    h1 { font-size: 16px; font-weight: 600; color: #111827; }
+
+    .count { font-size: 12px; color: #9CA3AF; white-space: nowrap; }
+
+    /* ---- search ---- */
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 380px;
+      margin-left: auto;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 7px 30px 7px 34px;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: #F9FAFB;
+      color: #111827;
+    }
+
+    .search-wrap input:focus { border-color: #818CF8; background: #fff; }
+
+    .search-icon {
+      position: absolute;
+      left: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: #9CA3AF;
+      pointer-events: none;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 8px; top: 50%;
+      transform: translateY(-50%);
+      background: #D1D5DB;
+      border: none; border-radius: 50%;
+      width: 16px; height: 16px;
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+      color: #6B7280;
+      font-size: 10px; line-height: 1; padding: 0;
+    }
+
+    .clear-btn.visible { display: flex; }
+    .clear-btn:hover { background: #9CA3AF; color: #fff; }
+
+    /* ---- upload zone ---- */
+    .upload-zone {
+      border: 1.5px dashed #D1D5DB;
+      border-radius: 8px;
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-over { border-color: #818CF8; background: #EEF2FF; }
+    .upload-zone p { font-size: 12px; color: #6B7280; line-height: 1.4; }
+    .upload-zone strong { color: #374151; }
+
+    /* ---- content ---- */
+    .content { padding: 16px 20px 48px; }
+
+    /* ---- category section ---- */
+    .cat-section { margin-bottom: 24px; scroll-margin-top: 100px; }
+
+    .cat-header {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .cat-header h2 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .cat-header span { font-size: 11px; color: #9CA3AF; }
+
+    /* ---- icon grid ---- */
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 5px;
+    }
+
+    /* ---- icon cell ---- */
+    .icon-cell {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 5px;
+      padding: 14px 6px 8px;
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      transition: border-color 0.1s, box-shadow 0.1s;
+      min-height: 96px;
+      user-select: none;
+    }
+
+    .icon-cell:hover { border-color: #C7D2FE; box-shadow: 0 0 0 3px #EEF2FF; z-index: 1; }
+
+    .icon-cell i { font-size: 20px; display: block; }
+
+    .icon-cell .custom-svg { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+    .icon-cell .custom-svg svg { width: 20px; height: 20px; }
+
+    .icon-name {
+      font-size: 8px; color: #9CA3AF;
+      text-align: center; word-break: break-all;
+      line-height: 1.3; max-width: 100%;
+    }
+
+    .icon-cell.is-custom { border-color: #A7F3D0; }
+    .icon-cell.is-custom .icon-name { color: #059669; }
+
+    /* ---- copy chips ---- */
+    .copy-chips {
+      display: none;
+      flex-direction: row;
+      gap: 3px;
+      margin-top: 2px;
+    }
+    .icon-cell:hover .copy-chips { display: flex; }
+
+    .copy-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid #E5E7EB;
+      background: #F9FAFB;
+      font-size: 9px;
+      font-weight: 500;
+      color: #6B7280;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
+    }
+    .copy-chip:hover { background: #EEF2FF; border-color: #818CF8; color: #4F46E5; }
+    .copy-chip:active { background: #E0E7FF; }
+
+    /* ---- delete button ---- */
+    .del-btn {
+      position: absolute; top: 4px; right: 4px;
+      width: 16px; height: 16px;
+      border-radius: 50%; border: none;
+      background: #E5E7EB; color: #6B7280;
+      font-size: 9px; line-height: 1;
+      cursor: pointer; display: none;
+      align-items: center; justify-content: center;
+      padding: 0; transition: background 0.1s;
+    }
+
+    .icon-cell:hover .del-btn { display: flex; }
+    .del-btn:hover { background: #EF4444; color: #fff; }
+    .del-btn.locked { cursor: default; opacity: 0.3; pointer-events: none; }
+
+    /* ---- empty state ---- */
+    .empty { text-align: center; padding: 56px 24px; color: #9CA3AF; font-size: 14px; }
+
+    /* ---- dialog ---- */
+    .dialog-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.32); z-index: 300;
+      align-items: center; justify-content: center;
+    }
+
+    .dialog-backdrop.open { display: flex; }
+
+    .dialog {
+      background: #fff; border-radius: 12px;
+      padding: 22px; width: 320px;
+      display: flex; flex-direction: column; gap: 14px;
+      box-shadow: 0 20px 48px rgba(0,0,0,0.15);
+    }
+
+    .dialog h2 { font-size: 15px; font-weight: 600; color: #111827; }
+
+    .dialog-preview {
+      display: flex; align-items: center; justify-content: center;
+      height: 68px; border: 1px solid #E5E7EB;
+      border-radius: 8px; background: #F9FAFB;
+    }
+
+    .dialog-preview svg { width: 32px; height: 32px; fill: #6B7280; }
+
+    .dialog label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 500; color: #374151; }
+    .dialog label small { color: #9CA3AF; font-weight: 400; }
+
+    .dialog input[type="text"] {
+      padding: 7px 10px; border: 1px solid #E5E7EB;
+      border-radius: 6px; font-size: 13px; outline: none; color: #111827;
+    }
+
+    .dialog input[type="text"]:focus { border-color: #818CF8; }
+
+    .dup-warning {
+      display: none; font-size: 12px; color: #D97706;
+      background: #FFFBEB; border: 1px solid #FDE68A;
+      border-radius: 6px; padding: 8px 10px; line-height: 1.4;
+    }
+
+    .dup-warning.visible { display: block; }
+
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    .btn { padding: 7px 13px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.1s; }
+    .btn:hover { opacity: 0.82; }
+    .btn-cancel { background: #F3F4F6; color: #374151; }
+    .btn-add { background: #6366F1; color: #fff; }
+    .btn-replace { background: #D97706; color: #fff; }
+
+    /* ---- toast ---- */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%) translateY(64px);
+      background: #111827; color: #fff;
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 13px; pointer-events: none;
+      z-index: 400;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+      opacity: 0; white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ---- regen overlay ---- */
+    .regen-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.45);
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px;
+    }
+    .regen-overlay.show { display: flex; }
+    .regen-overlay .regen-box {
+      background: #fff; border-radius: 12px;
+      padding: 24px 32px; text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      min-width: 220px;
+    }
+    .regen-overlay .regen-spinner {
+      width: 28px; height: 28px; margin: 0 auto 12px;
+      border: 3px solid #E5E7EB; border-top-color: #6366F1;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .regen-overlay .regen-msg {
+      font-size: 13px; font-weight: 500; color: #111827;
+    }
+    .regen-overlay .regen-sub {
+      font-size: 11px; color: #9CA3AF; margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ---- sidebar ---- -->
+  <nav class="sidebar">
+    <div class="sidebar-title">Categories</div>
+    <div class="sidebar-nav" id="sidebarNav"></div>
+
+    <div class="sidebar-dl">
+      <div class="sidebar-dl-label">Download</div>
+      <div class="sidebar-dl-row">
+        <a class="dl-chip" href="./fq-icons.woff2" download>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          WOFF2
+        </a>
+        <a class="dl-chip" href="./fq-icons.ttf" download>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          TTF
+        </a>
+        <a class="dl-chip" href="./fq-icons.css" download>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          CSS
+        </a>
+      </div>
+      <button class="dl-all" id="dlAllBtn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download All
+      </button>
+    </div>
+  </nav>
+
+  <!-- ---- main ---- -->
+  <div class="shell">
+    <div class="header">
+      <div class="header-row">
+        <h1>FQ Icons</h1>
+        <span class="count" id="count">Loading...</span>
+        <div class="search-wrap">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="search" placeholder="Search icons..." autocomplete="off" spellcheck="false">
+          <button class="clear-btn" id="clearBtn" aria-label="Clear">&#x2715;</button>
+        </div>
+      </div>
+      <div class="upload-zone" id="uploadZone">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p><strong>Drop an SVG here</strong> or click to browse -- name it and it appears in the grid immediately.</p>
+      </div>
+    </div>
+
+    <div class="content" id="content"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- regen overlay -->
+  <div class="regen-overlay" id="regenOverlay">
+    <div class="regen-box">
+      <div class="regen-spinner"></div>
+      <div class="regen-msg" id="regenMsg">Regenerating font...</div>
+      <div class="regen-sub">This takes a few seconds</div>
+    </div>
+  </div>
+
+  <!-- upload dialog -->
+  <div class="dialog-backdrop" id="dialogBackdrop">
+    <div class="dialog">
+      <h2>Name this icon</h2>
+      <div class="dialog-preview" id="dialogPreview"></div>
+      <label>
+        Class name suffix <small>(class will be fq-icon-{name})</small>
+        <input type="text" id="iconNameInput" placeholder="my-custom-icon">
+      </label>
+      <div class="dup-warning" id="dupWarning"></div>
+      <div class="dialog-actions" id="dialogActions">
+        <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
+        <button class="btn btn-add" id="addBtn">Add to grid</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- category definitions ----
+    const CATEGORIES = [
+      { label: 'Custom',       test: ic => ic.type === 'custom' },
+      { label: 'FloQast',      test: ic => ic.name.startsWith('fq-') ||
+          ['own-the-audit','traffic-cone','nav-help-outline','note','note-outlined',
+           'maps-ugc-outlined-empty','gift','supervised-user-circle-off',
+           'schema','photo-document-ai-enhance'].includes(ic.name) },
+      { label: 'Integrations', test: ic => ['workday','netsuite','quickbooks','coupa','excel',
+                                             'community','community-outlined'].includes(ic.name) },
+      { label: 'AI',           test: ic => ['magic-ai-star','flo-verse','mat-auto-awesome',
+                                             'mat-auto-mode','mat-assistant'].includes(ic.name) },
+      { label: 'Security',     test: ic => ['vpn-key-outlined-rotated','fingerprint-outlined',
+                                             'trust-numbers','switch-access-shortcut-add'].includes(ic.name) ||
+                                           ic.name.includes('vpn') || ic.name.includes('fingerprint') ||
+                                           ic.name.includes('lock') || ic.name.includes('shield') ||
+                                           ic.name.includes('security') || ic.name.includes('verified') },
+      { label: 'Navigation',   test: ic => ic.name.includes('arrow') || ic.name.includes('forward') ||
+                                           ic.name === 'folders' || ic.name.includes('navigate') ||
+                                           ic.name.includes('chevron') || ic.name.includes('menu') ||
+                                           ic.name.includes('subdirectory') },
+      { label: 'Actions',      test: ic => ['automation','automate','auto-fix','change-history',
+                                             'assign-check-circle','assign-check-circle-add-plus'].includes(ic.name) ||
+                                           ic.name.includes('edit') || ic.name.includes('delete') ||
+                                           ic.name.includes('add') || ic.name.includes('remove') ||
+                                           ic.name.includes('close') || ic.name.includes('check') ||
+                                           ic.name.includes('save') || ic.name.includes('copy') ||
+                                           ic.name.includes('search') || ic.name.includes('filter') ||
+                                           ic.name.includes('sort') || ic.name.includes('refresh') ||
+                                           ic.name.includes('upload') || ic.name.includes('download') },
+      { label: 'Media',        test: ic => ic.name.includes('view-content') || ic.name.includes('attachment') ||
+                                           ic.name.includes('photo') || ic.name.includes('image') ||
+                                           ic.name.includes('video') || ic.name.includes('audio') ||
+                                           ic.name.includes('volume') || ic.name.includes('play') ||
+                                           ic.name.includes('pause') || ic.name.includes('camera') ||
+                                           ic.name.includes('mic') },
+      { label: 'Legacy',       test: ic => ic.name.startsWith('lg-') },
+      { label: 'Material',     test: ic => ic.name.startsWith('mat-') },
+      { label: 'Other',        test: () => true },
+    ];
+
+    function catSlug(label) { return 'cat-' + label.toLowerCase().replace(/\s+/g, '-'); }
+
+    function categorize(icons) {
+      const buckets = {};
+      CATEGORIES.forEach(c => { buckets[c.label] = []; });
+      for (const ic of icons) {
+        const cat = CATEGORIES.find(c => c.test(ic));
+        if (cat) buckets[cat.label].push(ic);
+      }
+      return CATEGORIES
+        .map(c => ({ label: c.label, icons: buckets[c.label] }))
+        .filter(g => g.icons.length > 0);
+    }
+
+    // ---- state ----
+    let allIcons = [];
+    let query = '';
+    let pendingSvg = null;
+    let toastTimer = null;
+    let scrollObserver = null;
+
+    const contentEl  = document.getElementById('content');
+    const countEl    = document.getElementById('count');
+    const searchEl   = document.getElementById('search');
+    const clearBtn   = document.getElementById('clearBtn');
+    const toastEl    = document.getElementById('toast');
+    const backdrop   = document.getElementById('dialogBackdrop');
+    const previewEl  = document.getElementById('dialogPreview');
+    const nameInput  = document.getElementById('iconNameInput');
+    const dupWarn    = document.getElementById('dupWarning');
+    const actionsEl  = document.getElementById('dialogActions');
+    const sidebarNav = document.getElementById('sidebarNav');
+
+    const regenOverlay = document.getElementById('regenOverlay');
+    const regenMsg     = document.getElementById('regenMsg');
+
+    function showRegen(msg) {
+      regenMsg.textContent = msg || 'Regenerating font...';
+      regenOverlay.classList.add('show');
+    }
+    function hideRegen() { regenOverlay.classList.remove('show'); }
+
+    // ---- load ----
+    Promise.all([
+      fetch('./fq-icons.json').then(r => r.json()),
+      fetch('/api/custom').then(r => r.json()).catch(() => []),
+    ]).then(([data, customNames]) => {
+      const customSet = new Set(customNames);
+      allIcons = Object.keys(data).map(name => ({
+        name,
+        type: customSet.has(name) ? 'custom' : 'font',
+        codepoint: data[name],
+      }));
+      buildSidebar();
+      render();
+    }).catch(() => {
+      contentEl.innerHTML = '<div class="empty">Could not load fq-icons.json. Make sure the FQ Icons server is running (not http-server).</div>';
+    });
+
+    // ---- sidebar ----
+    function buildSidebar() {
+      const groups = categorize(allIcons);
+      sidebarNav.innerHTML = '';
+      for (const g of groups) {
+        const btn = document.createElement('button');
+        btn.className = 'nav-item';
+        btn.dataset.target = catSlug(g.label);
+        btn.innerHTML = `<span>${escHtml(g.label)}</span><span class="nav-count">${g.icons.length}</span>`;
+        btn.addEventListener('click', () => scrollToSection(catSlug(g.label)));
+        sidebarNav.appendChild(btn);
+      }
+    }
+
+    function scrollToSection(id) {
+      const section = document.getElementById(id);
+      if (!section) return;
+      const headerH = document.querySelector('.header').offsetHeight;
+      const top = section.getBoundingClientRect().top + window.scrollY - headerH - 12;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function setActiveNav(id) {
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === id);
+      });
+    }
+
+    function setupScrollSpy() {
+      if (scrollObserver) scrollObserver.disconnect();
+      const sections = document.querySelectorAll('.cat-section[id]');
+      if (!sections.length) return;
+
+      const headerH = document.querySelector('.header').offsetHeight;
+      scrollObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveNav(entry.target.id);
+        }
+      }, {
+        rootMargin: `-${headerH + 8}px 0px -65% 0px`,
+        threshold: 0,
+      });
+
+      sections.forEach(s => scrollObserver.observe(s));
+    }
+
+    // ---- search ----
+    searchEl.addEventListener('input', () => {
+      query = searchEl.value.trim().toLowerCase();
+      clearBtn.classList.toggle('visible', query.length > 0);
+      render();
+    });
+
+    clearBtn.addEventListener('click', () => {
+      searchEl.value = '';
+      query = '';
+      clearBtn.classList.remove('visible');
+      searchEl.focus();
+      render();
+    });
+
+    // ---- render ----
+    function render() {
+      contentEl.innerHTML = '';
+      const frag = document.createDocumentFragment();
+
+      if (query) {
+        if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
+        const hits = allIcons.filter(ic => ic.name.includes(query));
+        countEl.textContent = `${hits.length} of ${allIcons.length} icons`;
+
+        if (hits.length === 0) {
+          const el = document.createElement('div');
+          el.className = 'empty';
+          el.textContent = 'No icons match "' + escHtml(query) + '"';
+          frag.appendChild(el);
+        } else {
+          const grid = document.createElement('div');
+          grid.className = 'icon-grid';
+          hits.forEach(ic => grid.appendChild(makeCell(ic)));
+          frag.appendChild(grid);
+        }
+      } else {
+        countEl.textContent = `${allIcons.length} icons`;
+        const groups = categorize(allIcons);
+
+        for (const group of groups) {
+          const section = document.createElement('div');
+          section.className = 'cat-section';
+          section.id = catSlug(group.label);
+
+          const header = document.createElement('div');
+          header.className = 'cat-header';
+          header.innerHTML = `<h2>${escHtml(group.label)}</h2><span>${group.icons.length}</span>`;
+
+          const grid = document.createElement('div');
+          grid.className = 'icon-grid';
+          group.icons.forEach(ic => grid.appendChild(makeCell(ic)));
+
+          section.appendChild(header);
+          section.appendChild(grid);
+          frag.appendChild(section);
+        }
+      }
+
+      contentEl.appendChild(frag);
+      if (!query) setupScrollSpy();
+    }
+
+    function makeCell(ic) {
+      const cell = document.createElement('div');
+      cell.className = 'icon-cell' + (ic.type === 'custom' ? ' is-custom' : '');
+
+      const glyph = document.createElement('div');
+      glyph.innerHTML = `<i class="fq-icon fq-icon-${ic.name}"></i>`;
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'icon-name';
+      nameEl.textContent = ic.name;
+
+      // copy chips (appear on hover)
+      const chips = document.createElement('div');
+      chips.className = 'copy-chips';
+
+      const htmlChip = document.createElement('button');
+      htmlChip.className = 'copy-chip';
+      htmlChip.innerHTML = '&lt;/&gt;';
+      const htmlStr = `<i class="fq-icon fq-icon-${ic.name}"></i>`;
+      htmlChip.addEventListener('click', e => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(htmlStr).then(() => showToast('HTML copied!'));
+      });
+      chips.appendChild(htmlChip);
+
+      if (ic.type === 'font' && ic.codepoint) {
+        const uniChip = document.createElement('button');
+        uniChip.className = 'copy-chip';
+        uniChip.textContent = 'Figma';
+        const uniChar = String.fromCodePoint(ic.codepoint);
+        uniChip.addEventListener('click', e => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(uniChar).then(() => showToast('Unicode copied - paste into Figma text layer using fq-icons font'));
+        });
+        chips.appendChild(uniChip);
+      }
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'del-btn' + (ic.type === 'font' ? ' locked' : '');
+      delBtn.innerHTML = '&#x2715;';
+      delBtn.title = ic.type === 'font' ? 'Built-in icons cannot be deleted' : 'Remove icon';
+      delBtn.addEventListener('click', async e => {
+        e.stopPropagation();
+        if (ic.type === 'font') return;
+        showRegen('Removing icon and regenerating font...');
+        try {
+          const resp = await fetch(`/api/custom/${ic.name}`, { method: 'DELETE' });
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || 'Delete failed');
+          window.location.reload();
+        } catch (err) {
+          hideRegen();
+          showToast('Delete failed: ' + err.message);
+        }
+      });
+
+      cell.appendChild(glyph);
+      cell.appendChild(nameEl);
+      cell.appendChild(chips);
+      cell.appendChild(delBtn);
+
+      return cell;
+    }
+
+    // ---- upload ----
+    const uploadZone = document.getElementById('uploadZone');
+
+    uploadZone.addEventListener('click', () => {
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = '.svg';
+      inp.onchange = () => { if (inp.files[0]) readSvgFile(inp.files[0]); };
+      inp.click();
+    });
+
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault(); uploadZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.toLowerCase().endsWith('.svg')) readSvgFile(file);
+    });
+
+    function readSvgFile(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        pendingSvg = e.target.result;
+        previewEl.innerHTML = pendingSvg;
+        const svg = previewEl.querySelector('svg');
+        if (svg) { svg.setAttribute('width','32'); svg.setAttribute('height','32'); svg.style.fill='#6B7280'; }
+        nameInput.value = toKebab(file.name.replace(/\.svg$/i, ''));
+        dupWarn.classList.remove('visible');
+        checkDuplicate();
+        backdrop.classList.add('open');
+        nameInput.focus(); nameInput.select();
+      };
+      reader.readAsText(file);
+    }
+
+    function checkDuplicate() {
+      const name = toKebab(nameInput.value.trim());
+      const exists = allIcons.some(ic => ic.name === name);
+      if (exists) {
+        dupWarn.textContent = `An icon named "${name}" already exists.`;
+        dupWarn.classList.add('visible');
+        actionsEl.innerHTML = `<button class="btn btn-cancel" id="cancelBtn">Cancel</button><button class="btn btn-replace" id="replaceBtn">Replace</button>`;
+        document.getElementById('cancelBtn').addEventListener('click', closeDialog);
+        document.getElementById('replaceBtn').addEventListener('click', () => addIcon(true));
+      } else {
+        dupWarn.classList.remove('visible');
+        actionsEl.innerHTML = `<button class="btn btn-cancel" id="cancelBtn">Cancel</button><button class="btn btn-add" id="addBtn">Add to grid</button>`;
+        document.getElementById('cancelBtn').addEventListener('click', closeDialog);
+        document.getElementById('addBtn').addEventListener('click', () => addIcon(false));
+      }
+    }
+
+    nameInput.addEventListener('input', checkDuplicate);
+    nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') addIcon(false); });
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeDialog(); });
+
+    async function addIcon(replace) {
+      const raw = nameInput.value.trim();
+      if (!raw || !pendingSvg) return;
+      const name = toKebab(raw) || 'custom-icon';
+      let svg = pendingSvg;
+      svg = svg.replace(/fill="(?!none)[^"]*"/g, 'fill="#6B7280"');
+      if (!svg.includes('fill=')) svg = svg.replace('<svg', '<svg fill="#6B7280"');
+      svg = svg.replace(/(<svg[^>]*)\s+width="[^"]*"/, '$1');
+      svg = svg.replace(/(<svg[^>]*)\s+height="[^"]*"/, '$1');
+      closeDialog();
+      showRegen(replace ? 'Replacing icon and regenerating font...' : 'Adding icon and regenerating font...');
+      try {
+        const resp = await fetch('/api/save-icon', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, svg }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'Upload failed');
+        window.location.reload();
+      } catch (err) {
+        hideRegen();
+        showToast('Failed: ' + err.message);
+      }
+    }
+
+    function closeDialog() { backdrop.classList.remove('open'); pendingSvg = null; }
+
+    // ---- download all ----
+    document.getElementById('dlAllBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('dlAllBtn');
+      btn.classList.add('loading');
+      btn.textContent = 'Preparing...';
+      try {
+        const zip = new JSZip();
+        const [woff2, ttf, css] = await Promise.all([
+          fetch('./fq-icons.woff2').then(r => r.arrayBuffer()),
+          fetch('./fq-icons.ttf').then(r => r.arrayBuffer()),
+          fetch('./fq-icons.css').then(r => r.text()),
+        ]);
+        zip.file('fq-icons.woff2', woff2);
+        zip.file('fq-icons.ttf', ttf);
+        zip.file('fq-icons.css', css);
+        zip.file('usage.html', buildUsageHtml());
+        const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'fq-icons.zip'; a.click();
+        URL.revokeObjectURL(url);
+        showToast('Downloaded fq-icons.zip');
+      } catch (err) {
+        showToast('Download failed');
+        console.error(err);
+      } finally {
+        btn.classList.remove('loading');
+        btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download All';
+      }
+    });
+
+    function buildUsageHtml() {
+      const customSection = '';
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FQ Icons - Usage</title>
+  <link rel="stylesheet" href="fq-icons.css">
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 720px; margin: 48px auto; color: #374151; line-height: 1.6; padding: 0 24px; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    h2 { font-size: 14px; font-weight: 600; margin: 28px 0 8px; color: #111827; }
+    pre { background: #F3F4F6; border-radius: 8px; padding: 14px 16px; font-size: 13px; overflow-x: auto; }
+    .demo { display: flex; gap: 20px; margin-top: 12px; align-items: flex-start; flex-wrap: wrap; }
+    .demo-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .demo-item i { font-size: 24px; }
+    .demo-item span { font-size: 10px; color: #9CA3AF; }
+  </style>
+</head>
+<body>
+  <h1>FQ Icons</h1>
+  <p style="color:#6B7280;font-size:14px">871 icons: FQ custom (57), Material (763), Legacy (51).</p>
+  <h2>1. Include the stylesheet</h2>
+  <pre>&lt;link rel="stylesheet" href="path/to/fq-icons.css"&gt;</pre>
+  <h2>2. Use an icon</h2>
+  <pre>&lt;i class="fq-icon fq-icon-magic-ai-star"&gt;&lt;/i&gt;
+&lt;i class="fq-icon fq-icon-mat-zoom-in"&gt;&lt;/i&gt;
+&lt;i class="fq-icon fq-icon-compliance"&gt;&lt;/i&gt;</pre>
+  <h2>3. Change size or color</h2>
+  <pre>&lt;i class="fq-icon fq-icon-magic-ai-star" style="font-size:32px; color:#6366F1"&gt;&lt;/i&gt;</pre>
+  <h2>Icon prefixes</h2>
+  <pre>fq-icon-{name}      FQ custom icons
+fq-icon-mat-{name}  Material Design icons
+fq-icon-lg-{name}   Legacy icons</pre>
+  <h2>Examples</h2>
+  <div class="demo">
+    <div class="demo-item"><i class="fq-icon fq-icon-magic-ai-star"></i><span>magic-ai-star</span></div>
+    <div class="demo-item"><i class="fq-icon fq-icon-compliance"></i><span>compliance</span></div>
+    <div class="demo-item"><i class="fq-icon fq-icon-mat-zoom-in"></i><span>mat-zoom-in</span></div>
+    <div class="demo-item"><i class="fq-icon fq-icon-positive-arrow"></i><span>positive-arrow</span></div>
+    <div class="demo-item"><i class="fq-icon fq-icon-fingerprint-outlined"></i><span>fingerprint-outlined</span></div>
+    <div class="demo-item"><i class="fq-icon fq-icon-workday"></i><span>workday</span></div>
+  </div>${customSection}
+</body>
+</html>`;
+    }
+
+    // ---- utils ----
+    function showToast(msg) {
+      clearTimeout(toastTimer);
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1700);
+    }
+
+    function toKebab(s) {
+      return s.replace(/([a-z0-9])([A-Z])/g,'$1-$2').replace(/[_\s]+/g,'-').replace(/[^a-z0-9-]/gi,'').toLowerCase();
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>
