@@ -800,8 +800,8 @@
       const section = document.getElementById(id);
       if (!section) return;
       const headerH = document.querySelector('.header').offsetHeight;
-      const top = section.getBoundingClientRect().top + window.scrollY - headerH - 12;
-      window.scrollTo({ top, behavior: 'smooth' });
+      const top = section.getBoundingClientRect().top + window.scrollY - headerH - 8;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     }
 
     function setActiveNav(id) {
