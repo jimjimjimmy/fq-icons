@@ -280,10 +280,10 @@
 
     .icon-cell:hover { border-color: #C7D2FE; box-shadow: 0 0 0 3px #EEF2FF; z-index: 1; }
 
-    .icon-cell i { font-size: 20px; display: block; }
+    .icon-cell i { font-size: var(--icon-sz, 24px); display: block; }
 
-    .icon-cell .custom-svg { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
-    .icon-cell .custom-svg svg { width: 20px; height: 20px; }
+    .icon-cell .custom-svg { width: var(--icon-sz, 24px); height: var(--icon-sz, 24px); display: flex; align-items: center; justify-content: center; }
+    .icon-cell .custom-svg svg { width: var(--icon-sz, 24px); height: var(--icon-sz, 24px); }
 
     .icon-name {
       font-size: 8px; color: #9CA3AF;
@@ -435,6 +435,86 @@
       font-size: 11px; color: #9CA3AF; margin-top: 4px;
     }
   </style>
+  <style>
+    :root { --icon-sz: 24px; }
+
+    .icon-cell { min-height: calc(var(--icon-sz) + 52px); }
+
+    /* toolbar row */
+    .toolbar-row { display: flex; align-items: center; gap: 14px; padding-top: 2px; flex-wrap: wrap; }
+    .toolbar-label { font-size: 11px; color: #9CA3AF; white-space: nowrap; }
+    .size-ctrl { display: flex; align-items: center; gap: 7px; }
+    .size-ctrl input[type=range] { width: 80px; accent-color: #6366F1; cursor: pointer; }
+    .size-val { font-size: 11px; color: #6B7280; min-width: 22px; }
+
+    .btn-seg-group { display: flex; border: 1px solid #E5E7EB; border-radius: 6px; overflow: hidden; }
+    .btn-seg {
+      padding: 4px 10px; font-size: 11px; font-weight: 500; color: #6B7280;
+      background: #fff; border: none; border-right: 1px solid #E5E7EB; cursor: pointer;
+      transition: background 0.1s, color 0.1s; display: flex; align-items: center; gap: 4px;
+    }
+    .btn-seg:last-child { border-right: none; }
+    .btn-seg:hover { background: #F9FAFB; color: #374151; }
+    .btn-seg.active { background: #EEF2FF; color: #4F46E5; font-weight: 600; }
+
+    /* compact grid */
+    .icon-grid.compact { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 3px; }
+    .icon-grid.compact .icon-cell { padding: 10px 4px 6px; }
+
+    /* detail panel */
+    .detail-panel {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 260px;
+      background: #fff; border-left: 1px solid #E5E7EB; z-index: 150;
+      display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.2s ease;
+      box-shadow: -4px 0 16px rgba(0,0,0,0.06);
+    }
+    .detail-panel.open { transform: translateX(0); }
+    .shell { transition: margin-right 0.2s ease; }
+    .shell.panel-open { margin-right: 260px; }
+
+    .detail-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 14px 16px 12px; border-bottom: 1px solid #E5E7EB; flex-shrink: 0;
+    }
+    .detail-panel-name {
+      font-size: 12px; font-weight: 600; color: #111827;
+      word-break: break-all; flex: 1; margin-right: 8px; line-height: 1.4;
+    }
+    .detail-close {
+      width: 22px; height: 22px; border-radius: 50%; border: none;
+      background: #F3F4F6; color: #6B7280; font-size: 10px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background 0.1s;
+    }
+    .detail-close:hover { background: #E5E7EB; color: #374151; }
+    .detail-preview-wrap {
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      height: 120px; border-bottom: 1px solid #F3F4F6;
+    }
+    .detail-meta { padding: 10px 16px 0; flex-shrink: 0; }
+    .detail-codepoint {
+      font-family: monospace; font-size: 11px; color: #9CA3AF;
+      background: #F3F4F6; padding: 2px 6px; border-radius: 4px;
+    }
+    .detail-actions {
+      display: flex; gap: 8px; padding: 12px 16px; flex-shrink: 0;
+      border-bottom: 1px solid #F3F4F6;
+    }
+    .detail-copy-btn {
+      flex: 1; padding: 7px 8px; border: 1px solid #E5E7EB; border-radius: 7px;
+      background: #F9FAFB; font-size: 11px; font-weight: 500; color: #374151;
+      cursor: pointer; transition: background 0.1s, border-color 0.1s; white-space: nowrap;
+    }
+    .detail-copy-btn:hover { background: #EEF2FF; border-color: #818CF8; color: #4F46E5; }
+    .detail-color-row {
+      padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .detail-color-row input[type=color] {
+      width: 32px; height: 24px; border: 1px solid #E5E7EB; border-radius: 4px;
+      cursor: pointer; padding: 0 2px; background: none;
+    }
+  </style>
 </head>
 <body>
 
@@ -480,6 +560,26 @@
           <button class="clear-btn" id="clearBtn" aria-label="Clear">&#x2715;</button>
         </div>
       </div>
+      <div class="toolbar-row">
+        <div class="size-ctrl">
+          <span class="toolbar-label">Size</span>
+          <input type="range" id="sizeSlider" min="16" max="64" value="24" step="4">
+          <span class="size-val" id="sizeVal">24</span>
+        </div>
+        <div class="btn-seg-group" id="styleFilterGroup">
+          <button class="btn-seg active" data-val="both">Both</button>
+          <button class="btn-seg" data-val="outlined">Outlined</button>
+          <button class="btn-seg" data-val="filled">Filled</button>
+        </div>
+        <div class="btn-seg-group" id="densityToggle">
+          <button class="btn-seg active" data-val="comfortable" title="Comfortable">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="5" height="5" rx="1"/><rect x="7" y="0" width="5" height="5" rx="1"/><rect x="0" y="7" width="5" height="5" rx="1"/><rect x="7" y="7" width="5" height="5" rx="1"/></svg>
+          </button>
+          <button class="btn-seg" data-val="compact" title="Compact">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="3" height="3" rx="0.5"/><rect x="4.5" y="0" width="3" height="3" rx="0.5"/><rect x="9" y="0" width="3" height="3" rx="0.5"/><rect x="0" y="4.5" width="3" height="3" rx="0.5"/><rect x="4.5" y="4.5" width="3" height="3" rx="0.5"/><rect x="9" y="4.5" width="3" height="3" rx="0.5"/><rect x="0" y="9" width="3" height="3" rx="0.5"/><rect x="4.5" y="9" width="3" height="3" rx="0.5"/><rect x="9" y="9" width="3" height="3" rx="0.5"/></svg>
+          </button>
+        </div>
+      </div>
       <div class="upload-zone" id="uploadZone">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -490,6 +590,22 @@
     </div>
 
     <div class="content" id="content"></div>
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <span class="detail-panel-name" id="detailPanelName"></span>
+      <button class="detail-close" id="detailClose">&#x2715;</button>
+    </div>
+    <div class="detail-preview-wrap">
+      <i class="fq-icon" id="detailIcon" style="font-size:48px;color:#374151"></i>
+    </div>
+    <div class="detail-meta" id="detailMeta"></div>
+    <div class="detail-actions" id="detailCopyBtns"></div>
+    <div class="detail-color-row">
+      <span class="toolbar-label">Preview color</span>
+      <input type="color" id="detailColorPicker" value="#374151">
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -581,6 +697,52 @@
     let pendingSvg = null;
     let toastTimer = null;
     let scrollObserver = null;
+    let iconSize = 24;
+    let styleFilter = 'both';
+    let density = 'comfortable';
+
+    const SYNONYMS = {
+      money:     ['currency','dollar','payment','cash'],
+      hamburger: ['menu'],
+      trash:     ['delete'],
+      bin:       ['delete','trash'],
+      home:      ['house'],
+      user:      ['person','account','profile'],
+      person:    ['user','account'],
+      logout:    ['sign-out'],
+      login:     ['sign-in'],
+      warning:   ['alert','caution'],
+      error:     ['warning','alert'],
+      success:   ['check','done'],
+      email:     ['mail','envelope'],
+      picture:   ['image','photo'],
+      exchange:  ['currency','swap','convert'],
+      lock:      ['secure','password'],
+      eye:       ['view','visible'],
+      copy:      ['duplicate'],
+      plus:      ['add'],
+      cross:     ['close','cancel'],
+    };
+
+    function expandQuery(q) {
+      const terms = new Set([q]);
+      for (const [syn, targets] of Object.entries(SYNONYMS)) {
+        if (q.includes(syn)) targets.forEach(t => terms.add(t));
+        targets.forEach(t => { if (q.includes(t)) terms.add(syn); });
+      }
+      return [...terms];
+    }
+
+    function filterIcons(icons) {
+      let result = icons;
+      if (styleFilter === 'outlined') result = result.filter(ic => ic.name.includes('outline'));
+      else if (styleFilter === 'filled') result = result.filter(ic => !ic.name.includes('outline'));
+      if (query) {
+        const terms = expandQuery(query);
+        result = result.filter(ic => terms.some(t => ic.name.includes(t)));
+      }
+      return result;
+    }
 
     const contentEl  = document.getElementById('content');
     const countEl    = document.getElementById('count');
@@ -681,30 +843,104 @@
       render();
     });
 
+    // ---- size slider ----
+    document.getElementById('sizeSlider').addEventListener('input', e => {
+      iconSize = parseInt(e.target.value);
+      document.getElementById('sizeVal').textContent = iconSize;
+      document.documentElement.style.setProperty('--icon-sz', iconSize + 'px');
+    });
+
+    // ---- style filter ----
+    document.getElementById('styleFilterGroup').addEventListener('click', e => {
+      const btn = e.target.closest('[data-val]');
+      if (!btn) return;
+      styleFilter = btn.dataset.val;
+      document.querySelectorAll('#styleFilterGroup .btn-seg').forEach(b => b.classList.toggle('active', b === btn));
+      render();
+    });
+
+    // ---- density toggle ----
+    document.getElementById('densityToggle').addEventListener('click', e => {
+      const btn = e.target.closest('[data-val]');
+      if (!btn) return;
+      density = btn.dataset.val;
+      document.querySelectorAll('#densityToggle .btn-seg').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.icon-grid').forEach(g => g.classList.toggle('compact', density === 'compact'));
+    });
+
+    // ---- detail panel ----
+    function openDetail(ic) {
+      document.getElementById('detailPanelName').textContent = ic.name;
+      const iconEl = document.getElementById('detailIcon');
+      iconEl.className = `fq-icon fq-icon-${ic.name}`;
+      iconEl.style.color = document.getElementById('detailColorPicker').value;
+
+      const meta = document.getElementById('detailMeta');
+      meta.innerHTML = ic.codepoint
+        ? `<span class="detail-codepoint">U+${ic.codepoint.toString(16).toUpperCase().padStart(4,'0')}</span>`
+        : '';
+
+      const btns = document.getElementById('detailCopyBtns');
+      btns.innerHTML = '';
+
+      const htmlBtn = document.createElement('button');
+      htmlBtn.className = 'detail-copy-btn';
+      htmlBtn.innerHTML = '&lt;/&gt; HTML';
+      htmlBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(`<i class="fq-icon fq-icon-${ic.name}"></i>`).then(() => showToast('HTML copied!'));
+      });
+      btns.appendChild(htmlBtn);
+
+      if (ic.codepoint) {
+        const figmaBtn = document.createElement('button');
+        figmaBtn.className = 'detail-copy-btn';
+        figmaBtn.textContent = 'Figma';
+        figmaBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(String.fromCodePoint(ic.codepoint)).then(() => showToast('Unicode copied - paste into Figma text layer using fq-icons font'));
+        });
+        btns.appendChild(figmaBtn);
+      }
+
+      document.getElementById('detailPanel').classList.add('open');
+      document.querySelector('.shell').classList.add('panel-open');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailPanel').classList.remove('open');
+      document.querySelector('.shell').classList.remove('panel-open');
+    }
+
+    document.getElementById('detailClose').addEventListener('click', closeDetail);
+    document.getElementById('detailColorPicker').addEventListener('input', e => {
+      document.getElementById('detailIcon').style.color = e.target.value;
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
     // ---- render ----
     function render() {
       contentEl.innerHTML = '';
       const frag = document.createDocumentFragment();
+      const filtered = filterIcons(allIcons);
+      const gridClass = 'icon-grid' + (density === 'compact' ? ' compact' : '');
 
       if (query) {
         if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
-        const hits = allIcons.filter(ic => ic.name.includes(query));
-        countEl.textContent = `${hits.length} of ${allIcons.length} icons`;
+        countEl.textContent = `${filtered.length} of ${allIcons.length} icons`;
 
-        if (hits.length === 0) {
+        if (filtered.length === 0) {
           const el = document.createElement('div');
           el.className = 'empty';
           el.textContent = 'No icons match "' + escHtml(query) + '"';
           frag.appendChild(el);
         } else {
           const grid = document.createElement('div');
-          grid.className = 'icon-grid';
-          hits.forEach(ic => grid.appendChild(makeCell(ic)));
+          grid.className = gridClass;
+          filtered.forEach(ic => grid.appendChild(makeCell(ic)));
           frag.appendChild(grid);
         }
       } else {
-        countEl.textContent = `${allIcons.length} icons`;
-        const groups = categorize(allIcons);
+        countEl.textContent = `${filtered.length} icons`;
+        const groups = categorize(filtered);
 
         for (const group of groups) {
           const section = document.createElement('div');
@@ -716,7 +952,7 @@
           header.innerHTML = `<h2>${escHtml(group.label)}</h2><span>${group.icons.length}</span>`;
 
           const grid = document.createElement('div');
-          grid.className = 'icon-grid';
+          grid.className = gridClass;
           group.icons.forEach(ic => grid.appendChild(makeCell(ic)));
 
           section.appendChild(header);
@@ -754,7 +990,7 @@
       });
       chips.appendChild(htmlChip);
 
-      if (ic.type === 'font' && ic.codepoint) {
+      if (ic.codepoint) {
         const uniChip = document.createElement('button');
         uniChip.className = 'copy-chip';
         uniChip.textContent = 'Figma';
@@ -789,6 +1025,8 @@
       cell.appendChild(nameEl);
       cell.appendChild(chips);
       cell.appendChild(delBtn);
+
+      cell.addEventListener('click', () => openDetail(ic));
 
       return cell;
     }
