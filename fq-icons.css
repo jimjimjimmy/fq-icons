@@ -1,7 +1,7 @@
 @font-face {
     font-family: "fq-icons";
-    src: url("./fq-icons.woff2?f82dea01f343e13693e76ba38bf1aa4e") format("woff2"),
-url("./fq-icons.ttf?f82dea01f343e13693e76ba38bf1aa4e") format("truetype");
+    src: url("./fq-icons.woff2?54d4f86eda4389f6a4fa06e0043b8ecc") format("woff2"),
+url("./fq-icons.ttf?54d4f86eda4389f6a4fa06e0043b8ecc") format("truetype");
 }
 
 i[class^="fq-icon-"]:before, i[class*=" fq-icon-"]:before {
@@ -2520,62 +2520,59 @@ i[class^="fq-icon-"]:before, i[class*=" fq-icon-"]:before {
 .fq-icon-fq-remind-cta-filled:before {
     content: "\f443";
 }
-.fq-icon-fq-compliance-icon:before {
+.fq-icon-forward-arrow-right:before {
     content: "\f444";
 }
-.fq-icon-forward-arrow-right:before {
+.fq-icon-forward-arrow-right-outlined:before {
     content: "\f445";
 }
-.fq-icon-forward-arrow-right-outlined:before {
+.fq-icon-folders:before {
     content: "\f446";
 }
-.fq-icon-folders:before {
+.fq-icon-flo-verse:before {
     content: "\f447";
 }
-.fq-icon-flo-verse:before {
+.fq-icon-fingerprint-outlined:before {
     content: "\f448";
 }
-.fq-icon-fingerprint-outlined:before {
+.fq-icon-excel:before {
     content: "\f449";
 }
-.fq-icon-excel:before {
+.fq-icon-currency-exchange:before {
     content: "\f44a";
 }
-.fq-icon-currency-exchange:before {
+.fq-icon-coupa:before {
     content: "\f44b";
 }
-.fq-icon-coupa:before {
+.fq-icon-confirm-test:before {
     content: "\f44c";
 }
-.fq-icon-confirm-test:before {
+.fq-icon-compliance:before {
     content: "\f44d";
 }
-.fq-icon-compliance:before {
+.fq-icon-community:before {
     content: "\f44e";
 }
-.fq-icon-community:before {
+.fq-icon-community-outlined:before {
     content: "\f44f";
 }
-.fq-icon-community-outlined:before {
+.fq-icon-change-history:before {
     content: "\f450";
 }
-.fq-icon-change-history:before {
+.fq-icon-auto-fix:before {
     content: "\f451";
 }
-.fq-icon-auto-fix:before {
+.fq-icon-attachment-rotated:before {
     content: "\f452";
 }
-.fq-icon-attachment-rotated:before {
+.fq-icon-assign-check-circle:before {
     content: "\f453";
 }
-.fq-icon-assign-check-circle:before {
+.fq-icon-assign-check-circle-add-plus:before {
     content: "\f454";
 }
-.fq-icon-assign-check-circle-add-plus:before {
-    content: "\f455";
-}
 .fq-icon-arrow-right-align:before {
-    content: "\f456";
+    content: "\f455";
 }
 
 .fq-icon { color: #6B7280; }

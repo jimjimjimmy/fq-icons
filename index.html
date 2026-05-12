@@ -67,8 +67,8 @@
     .nav-item:hover { background: #F9FAFB; color: #374151; }
 
     .nav-item.active {
-      background: #EEF2FF;
-      color: #4F46E5;
+      background: #ECFDF5;
+      color: #1fac76;
       font-weight: 500;
     }
 
@@ -78,7 +78,7 @@
       flex-shrink: 0;
     }
 
-    .nav-item.active .nav-count { color: #818CF8; }
+    .nav-item.active .nav-count { color: #1fac76; }
 
     /* ---- sidebar downloads ---- */
     .sidebar-dl {
@@ -130,7 +130,7 @@
       padding: 7px;
       border-radius: 6px;
       border: none;
-      background: #6366F1;
+      background: #1fac76;
       color: #fff;
       font-size: 12px;
       font-weight: 500;
@@ -142,7 +142,7 @@
       transition: background 0.1s;
     }
 
-    .dl-all:hover { background: #4F46E5; }
+    .dl-all:hover { background: #1c895f; }
     .dl-all.loading { opacity: 0.7; pointer-events: none; }
 
     /* ---- main wrapper ---- */
@@ -186,7 +186,7 @@
       color: #111827;
     }
 
-    .search-wrap input:focus { border-color: #818CF8; background: #fff; }
+    .search-wrap input:focus { border-color: #1fac76; background: #fff; }
 
     .search-icon {
       position: absolute;
@@ -225,7 +225,7 @@
       gap: 10px;
     }
 
-    .upload-zone:hover, .upload-zone.drag-over { border-color: #818CF8; background: #EEF2FF; }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: #1fac76; background: #ECFDF5; }
     .upload-zone p { font-size: 12px; color: #6B7280; line-height: 1.4; }
     .upload-zone strong { color: #374151; }
 
@@ -278,7 +278,7 @@
       user-select: none;
     }
 
-    .icon-cell:hover { border-color: #C7D2FE; box-shadow: 0 0 0 3px #EEF2FF; z-index: 1; }
+    .icon-cell:hover { border-color: #6EE7B7; box-shadow: 0 0 0 3px #ECFDF5; z-index: 1; }
 
     .icon-cell i { font-size: var(--icon-sz, 24px); display: block; }
 
@@ -294,14 +294,22 @@
     .icon-cell.is-custom { border-color: #A7F3D0; }
     .icon-cell.is-custom .icon-name { color: #059669; }
 
-    /* ---- copy chips ---- */
-    .copy-chips {
+    /* ---- copy overlay ---- */
+    .copy-overlay {
       display: none;
-      flex-direction: row;
-      gap: 3px;
-      margin-top: 2px;
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.90);
+      border-radius: 7px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      z-index: 2;
+      pointer-events: none;
     }
-    .icon-cell:hover .copy-chips { display: flex; }
+    .icon-cell:hover .copy-overlay { display: flex; }
+    .copy-overlay .copy-chip { pointer-events: auto; }
 
     .copy-chip {
       display: inline-flex;
@@ -318,8 +326,8 @@
       white-space: nowrap;
       transition: background 0.1s, border-color 0.1s, color 0.1s;
     }
-    .copy-chip:hover { background: #EEF2FF; border-color: #818CF8; color: #4F46E5; }
-    .copy-chip:active { background: #E0E7FF; }
+    .copy-chip:hover { background: #ECFDF5; border-color: #1fac76; color: #1c895f; }
+    .copy-chip:active { background: #D1FAE5; }
 
     /* ---- delete button ---- */
     .del-btn {
@@ -327,6 +335,7 @@
       width: 16px; height: 16px;
       border-radius: 50%; border: none;
       background: #E5E7EB; color: #6B7280;
+      z-index: 3;
       font-size: 9px; line-height: 1;
       cursor: pointer; display: none;
       align-items: center; justify-content: center;
@@ -374,7 +383,7 @@
       border-radius: 6px; font-size: 13px; outline: none; color: #111827;
     }
 
-    .dialog input[type="text"]:focus { border-color: #818CF8; }
+    .dialog input[type="text"]:focus { border-color: #1fac76; }
 
     .dup-warning {
       display: none; font-size: 12px; color: #D97706;
@@ -389,7 +398,7 @@
     .btn { padding: 7px 13px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.1s; }
     .btn:hover { opacity: 0.82; }
     .btn-cancel { background: #F3F4F6; color: #374151; }
-    .btn-add { background: #6366F1; color: #fff; }
+    .btn-add { background: #1fac76; color: #fff; }
     .btn-replace { background: #D97706; color: #fff; }
 
     /* ---- toast ---- */
@@ -423,7 +432,7 @@
     }
     .regen-overlay .regen-spinner {
       width: 28px; height: 28px; margin: 0 auto 12px;
-      border: 3px solid #E5E7EB; border-top-color: #6366F1;
+      border: 3px solid #E5E7EB; border-top-color: #1fac76;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
@@ -444,7 +453,7 @@
     .toolbar-row { display: flex; align-items: center; gap: 14px; padding-top: 2px; flex-wrap: wrap; }
     .toolbar-label { font-size: 11px; color: #9CA3AF; white-space: nowrap; }
     .size-ctrl { display: flex; align-items: center; gap: 7px; }
-    .size-ctrl input[type=range] { width: 80px; accent-color: #6366F1; cursor: pointer; }
+    .size-ctrl input[type=range] { width: 80px; accent-color: #1fac76; cursor: pointer; }
     .size-val { font-size: 11px; color: #6B7280; min-width: 22px; }
 
     .btn-seg-group { display: flex; border: 1px solid #E5E7EB; border-radius: 6px; overflow: hidden; }
@@ -455,7 +464,7 @@
     }
     .btn-seg:last-child { border-right: none; }
     .btn-seg:hover { background: #F9FAFB; color: #374151; }
-    .btn-seg.active { background: #EEF2FF; color: #4F46E5; font-weight: 600; }
+    .btn-seg.active { background: #ECFDF5; color: #1c895f; font-weight: 600; }
 
     /* compact grid */
     .icon-grid.compact { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 3px; }
@@ -506,7 +515,7 @@
       background: #F9FAFB; font-size: 11px; font-weight: 500; color: #374151;
       cursor: pointer; transition: background 0.1s, border-color 0.1s; white-space: nowrap;
     }
-    .detail-copy-btn:hover { background: #EEF2FF; border-color: #818CF8; color: #4F46E5; }
+    .detail-copy-btn:hover { background: #ECFDF5; border-color: #1fac76; color: #1c895f; }
     .detail-color-row {
       padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
     }
@@ -976,9 +985,9 @@
       nameEl.className = 'icon-name';
       nameEl.textContent = ic.name;
 
-      // copy chips (appear on hover)
+      // hover overlay - scrim with stacked copy buttons
       const chips = document.createElement('div');
-      chips.className = 'copy-chips';
+      chips.className = 'copy-overlay';
 
       const htmlChip = document.createElement('button');
       htmlChip.className = 'copy-chip';
@@ -1175,7 +1184,7 @@
 &lt;i class="fq-icon fq-icon-mat-zoom-in"&gt;&lt;/i&gt;
 &lt;i class="fq-icon fq-icon-compliance"&gt;&lt;/i&gt;</pre>
   <h2>3. Change size or color</h2>
-  <pre>&lt;i class="fq-icon fq-icon-magic-ai-star" style="font-size:32px; color:#6366F1"&gt;&lt;/i&gt;</pre>
+  <pre>&lt;i class="fq-icon fq-icon-magic-ai-star" style="font-size:32px; color:#1fac76"&gt;&lt;/i&gt;</pre>
   <h2>Icon prefixes</h2>
   <pre>fq-icon-{name}      FQ custom icons
 fq-icon-mat-{name}  Material Design icons
