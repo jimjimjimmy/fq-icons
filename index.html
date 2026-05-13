@@ -606,7 +606,7 @@
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
-        <p><strong>Drop an SVG here</strong> or click to browse -- name it and it appears in the grid immediately.</p>
+        <p id="uploadZoneText"><strong>Drop an SVG here</strong> or click to browse -- name it and it appears in the grid immediately.</p>
       </div>
     </div>
 
@@ -789,8 +789,12 @@
     // ---- load ----
     Promise.all([
       fetch('./fq-icons.json').then(r => r.json()),
-      fetch('/api/custom').then(r => r.json()).catch(() => []),
-    ]).then(([data, customNames]) => {
+      fetch('/api/custom').then(r => r.json()).catch(() => null),
+    ]).then(([data, customResult]) => {
+      if (customResult === null) {
+        document.getElementById('uploadZone').style.display = 'none';
+      }
+      const customNames = customResult || [];
       const customSet = new Set(customNames);
       allIcons = Object.keys(data).map(name => ({
         name,
@@ -800,7 +804,7 @@
       buildSidebar();
       render();
     }).catch(() => {
-      contentEl.innerHTML = '<div class="empty">Could not load fq-icons.json. Make sure the FQ Icons server is running (not http-server).</div>';
+      contentEl.innerHTML = '<div class="empty">Could not load icon data.</div>';
     });
 
     // ---- sidebar ----
@@ -1057,6 +1061,7 @@
     const uploadZone = document.getElementById('uploadZone');
 
     uploadZone.addEventListener('click', () => {
+      if (uploadZone.dataset.static) { showToast('Upload requires the local server - run fq-icons alias'); return; }
       const inp = document.createElement('input');
       inp.type = 'file'; inp.accept = '.svg';
       inp.onchange = () => { if (inp.files[0]) readSvgFile(inp.files[0]); };
@@ -1067,6 +1072,7 @@
     uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
     uploadZone.addEventListener('drop', e => {
       e.preventDefault(); uploadZone.classList.remove('drag-over');
+      if (uploadZone.dataset.static) { showToast('Upload requires the local server - run fq-icons alias'); return; }
       const file = e.dataTransfer.files[0];
       if (file && file.name.toLowerCase().endsWith('.svg')) readSvgFile(file);
     });
