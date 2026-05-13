@@ -463,7 +463,9 @@
     .toolbar-row { display: flex; align-items: center; gap: 14px; padding-top: 2px; flex-wrap: wrap; }
     .toolbar-label { font-size: 11px; color: #9CA3AF; white-space: nowrap; }
     .size-ctrl { display: flex; align-items: center; gap: 7px; background: #F3F4F6; border-radius: 6px; padding: 3px 8px; }
-    .size-ctrl input[type=range] { width: 80px; accent-color: #1fac76; cursor: pointer; }
+    .size-ctrl input[type=range] { width: 80px; accent-color: #1fac76; cursor: pointer; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: #D1D5DB; outline: none; }
+    .size-ctrl input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #1fac76; cursor: pointer; }
+    .size-ctrl input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #1fac76; cursor: pointer; border: none; }
     .size-val { font-size: 11px; color: #6B7280; min-width: 22px; }
 
     .btn-seg-group { display: flex; border: 1px solid #E5E7EB; border-radius: 6px; overflow: hidden; }
